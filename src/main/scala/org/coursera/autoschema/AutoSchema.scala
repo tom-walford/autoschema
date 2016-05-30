@@ -43,6 +43,7 @@ object AutoSchema {
   // Hand written schemas for common types
   private[this] val schemaTypeForScala = Map(
     "org.joda.time.DateTime" -> Json.obj("type" -> "string", "format" -> "date"),
+    "java.time.ZonedDateTime" -> Json.obj("type" -> "string", "format" -> "date"),
     "java.util.Date" -> Json.obj("type" -> "string", "format" -> "date"),
     "java.lang.String" -> Json.obj("type" -> "string"),
     "scala.Boolean" -> Json.obj("type" -> "boolean"),
