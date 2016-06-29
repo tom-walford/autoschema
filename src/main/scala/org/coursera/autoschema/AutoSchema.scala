@@ -58,36 +58,36 @@ object AutoSchema {
   private[this] val classSchemaCache = collection.concurrent.TrieMap[String, JsObject]()
 
   private[this] val isHideAnnotation = (annotation: ru.Annotation) =>
-    annotation.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.Term.Hide"
+    annotation.tree.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.Term.Hide"
 
   private[this] val isFormatAnnotation = (annotation: ru.Annotation) =>
-    annotation.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.FormatAs"
+    annotation.tree.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.FormatAs"
 
   private[this] val isExposeAnnotation = (annotation: ru.Annotation) =>
-    annotation.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.ExposeAs"
+    annotation.tree.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.ExposeAs"
 
   private[this] val isTermExposeAnnotation = (annotation: ru.Annotation) =>
-    annotation.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.Term.ExposeAs"
+    annotation.tree.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.Term.ExposeAs"
 
   private[this] val isDescriptionAnnotation = (annotaion: ru.Annotation) =>
-    annotaion.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.Description"
+    annotaion.tree.tpe.typeSymbol.fullName == "org.coursera.autoschema.annotations.Description"
 
   // Generates JSON schema based on a FormatAs annotation
   private[this] def formatAnnotationJson(annotation: ru.Annotation) = {
-    annotation.scalaArgs match {
+    annotation.tree.children.tail match {
       case typ :: Nil =>
-        Json.obj("type" -> typ.toString.tail.init)
+        Json.obj("type" -> typ.toString().tail.init)
       case typ :: format :: Nil =>
-        Json.obj("type" -> typ.toString.tail.init, "format" -> format.toString.tail.init)
+        Json.obj("type" -> typ.toString().tail.init, "format" -> format.toString().tail.init)
       case _ =>
         Json.obj()
     }
   }
 
   private [this] def descriptionAnnotationJson(annotation: ru.Annotation) = {
-    annotation.scalaArgs match {
+    annotation.tree.children.tail match {
       case description :: Nil =>
-        Some("description" -> JsString(description.toString.tail.init))
+        Some("description" -> JsString(description.toString().tail.init))
       case _ => None
     }
   }
@@ -95,7 +95,7 @@ object AutoSchema {
   private[this] def createClassJson(tpe: ru.Type, previousTypes: Set[String]) = {
     // Check if schema for this class has already been generated
     classSchemaCache.getOrElseUpdate(tpe.typeSymbol.fullName, {
-      val title = tpe.typeSymbol.name.decoded
+      val title = tpe.typeSymbol.name.decodedName.toString
       val propertiesList = tpe.members.flatMap { member =>
         if (member.isTerm) {
           val term = member.asTerm
@@ -105,7 +105,7 @@ object AutoSchema {
               .getOrElse {
               term.annotations.find(isTermExposeAnnotation)
                 .map(annotation =>
-                createSchema(annotation.tpe.asInstanceOf[ru.TypeRefApi].args.head, previousTypes))
+                createSchema(annotation.tree.tpe.asInstanceOf[ru.TypeRefApi].args.head, previousTypes))
                 .getOrElse(createSchema(term.typeSignature, previousTypes + tpe.typeSymbol.fullName))
             }
 
@@ -115,7 +115,7 @@ object AutoSchema {
               case None => termFormat
             }
 
-            Some(term.name.decoded.trim -> termFormatWithDescription)
+            Some(term.name.decodedName.toString.trim -> termFormatWithDescription)
           } else {
             None
           }
@@ -179,7 +179,7 @@ object AutoSchema {
         .map(formatAnnotationJson)
         .getOrElse {
         tpe.typeSymbol.annotations.find(isExposeAnnotation)
-          .map(annotation => createSchema(annotation.tpe.asInstanceOf[ru.TypeRefApi].args.head, previousTypes))
+          .map(annotation => createSchema(annotation.tree.tpe.asInstanceOf[ru.TypeRefApi].args.head, previousTypes))
           .getOrElse {
           schemaTypeForScala.getOrElse(typeName, {
             if (tpe.typeSymbol.isClass) {
@@ -235,5 +235,5 @@ object AutoSchema {
     styleSchema(Json.prettyPrint(createSchema(ru.typeOf[T])), indent)
 
   private[this] def styleSchema(schema: String, indent: Int) =
-    s"""<div style="margin-left: ${indent}px; background-color: #E8E8E8; border-width: 1px;"><i>${schema}</i></div>"""
+    s"""<div style="margin-left: ${indent}px; background-color: #E8E8E8; border-width: 1px;"><i>$schema</i></div>"""
 }
