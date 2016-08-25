@@ -6,7 +6,7 @@ organization := "com.sauldhernandez"
 
 scalaVersion := "2.11.7"
 
-semanticVersion := Version(1, 0, 1)
+semanticVersion := Version(1, 0, 2)
 
 scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8")
 
@@ -21,6 +21,8 @@ libraryDependencies ++= Seq(
 useGpg := true
 
 usePgpKeyHex("34de53dd")
+
+buildInfoPackage := "com.sauldhernandez.autoschema"
 
 publishMavenStyle := true
 

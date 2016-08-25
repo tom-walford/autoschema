@@ -26,7 +26,7 @@ Unsupported Features
 ## Installation
 Add this line to your `build.sbt`:
 
-        libraryDependencies += "com.sauldhernandez" %% "autoschema" % "1.0.1"
+        libraryDependencies += "com.sauldhernandez" %% "autoschema" % "1.0.2"
 
 ## Usage
 With a type parameter
