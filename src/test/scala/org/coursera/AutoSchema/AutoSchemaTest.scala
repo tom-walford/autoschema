@@ -72,6 +72,7 @@ class AutoSchemaTest extends AssertionsForJUnit {
       Json.obj(
         "title" -> "TypeOne",
         "type" -> "object",
+        "required" -> Json.arr("param1"),
         "properties" -> Json.obj(
           "param1" -> Json.obj(
             "type" -> "number",
@@ -84,6 +85,7 @@ class AutoSchemaTest extends AssertionsForJUnit {
       Json.obj(
         "title" -> "TypeTwo",
         "type" -> "object",
+        "required" -> Json.arr("param2", "param1"),
         "properties" -> Json.obj(
           "param1" -> Json.obj(
             "type" -> "number",
@@ -99,10 +101,12 @@ class AutoSchemaTest extends AssertionsForJUnit {
       Json.obj(
         "title" -> "TypeThree",
         "type" -> "object",
+        "required" -> Json.arr("param2", "param1"),
         "properties" -> Json.obj(
           "param1" -> Json.obj(
             "title" -> "TypeThreeParamOne",
             "type" -> "object",
+            "required" -> Json.arr("param1"),
             "properties" -> Json.obj(
               "param1" -> Json.obj(
                 "type" -> "string"))),
@@ -117,6 +121,7 @@ class AutoSchemaTest extends AssertionsForJUnit {
       Json.obj(
         "title" -> "TypeFour",
         "type" -> "object",
+        "required" -> Json.arr("param1"),
         "properties" -> Json.obj(
           "param1" -> Json.obj(
             "type" -> "number",
@@ -129,6 +134,7 @@ class AutoSchemaTest extends AssertionsForJUnit {
       Json.obj(
         "title" -> "TypeFive",
         "type" -> "object",
+        "required" -> Json.arr("param2", "param1"),
         "properties" -> Json.obj(
           "param1" -> Json.obj(
             "type" -> "string"),
@@ -142,6 +148,7 @@ class AutoSchemaTest extends AssertionsForJUnit {
       Json.obj(
         "title" -> "TypeSix",
         "type" -> "object",
+        "required" -> Json.arr("param2", "param1"),
         "properties" -> Json.obj(
           "param1" -> Json.obj(
             "type" -> "number",
@@ -157,6 +164,7 @@ class AutoSchemaTest extends AssertionsForJUnit {
       Json.obj(
         "title" -> "TypeSeven",
         "type" -> "object",
+        "required" -> Json.arr("param1"),
         "properties" -> Json.obj(
           "param1" -> Json.obj(
             "type" -> "string",
@@ -213,6 +221,7 @@ class AutoSchemaTest extends AssertionsForJUnit {
       Json.obj(
         "title" -> "TypeWithDescription",
         "type" -> "object",
+        "required" -> Json.arr("param1"),
         "properties" -> Json.obj(
           "param1" -> Json.obj(
             "type" -> "string",
