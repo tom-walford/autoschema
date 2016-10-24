@@ -24,37 +24,8 @@ import play.api.libs.json.JsString
 import scala.collection.mutable
 import scala.reflect.runtime.{universe => ru}
 
-/**
- * AutoSchema lets you take any Scala type and create JSON Schema out of it
- * @example
- * {{{
- *      // Pass the type as a type parameter
- *      case class MyType(...)
- *
- *      AutoSchema.createSchema[MyType]
- *
- *
- *      // Or pass the reflection type
- *      case class MyOtherType(...)
- *
- *      AutoSchema.createSchema(ru.typeOf[MyOtherType])
- * }}}
- */
-object AutoSchema {
-  // Hand written schemas for common types
-  private[this] val schemaTypeForScala = Map(
-    "org.joda.time.DateTime" -> Json.obj("type" -> "string", "format" -> "date"),
-    "java.time.ZonedDateTime" -> Json.obj("type" -> "string", "format" -> "date"),
-    "java.util.Date" -> Json.obj("type" -> "string", "format" -> "date"),
-    "java.lang.String" -> Json.obj("type" -> "string"),
-    "scala.Boolean" -> Json.obj("type" -> "boolean"),
-    "scala.Int" -> Json.obj("type" -> "number", "format" -> "number"),
-    "scala.Long" -> Json.obj("type" -> "number", "format" -> "number"),
-    "scala.Double" -> Json.obj("type" -> "number", "format" -> "number"),
-    "scala.math.BigInt" -> Json.obj("type" -> "number", "format" -> "number"),
-    "scala.math.BigDecimal" -> Json.obj("type" -> "number", "format" -> "number"),
-    "java.util.UUID" -> Json.obj("type" -> "string", "pattern" -> "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$")
-  )
+abstract class AutoSchema {
+  _: TypeMappings =>
 
   private[this] val classSchemaCache = collection.concurrent.TrieMap[String, JsObject]()
 
@@ -184,7 +155,7 @@ object AutoSchema {
         tpe.typeSymbol.annotations.find(isExposeAnnotation)
           .map(annotation => createSchema(annotation.tree.tpe.asInstanceOf[ru.TypeRefApi].args.head, previousTypes))
           .getOrElse {
-          schemaTypeForScala.getOrElse(typeName, {
+          schemaTypeForScala(typeName).getOrElse {
             if (tpe.typeSymbol.isClass) {
               // Check if this schema is recursive
               if (previousTypes.contains(tpe.typeSymbol.fullName)) {
@@ -195,7 +166,7 @@ object AutoSchema {
             } else {
               Json.obj()
             }
-          })
+          }
         }
       }
       addDescription(tpe, jsonObj)
@@ -240,3 +211,21 @@ object AutoSchema {
   private[this] def styleSchema(schema: String, indent: Int) =
     s"""<div style="margin-left: ${indent}px; background-color: #E8E8E8; border-width: 1px;"><i>$schema</i></div>"""
 }
+
+/**
+ * AutoSchema lets you take any Scala type and create JSON Schema out of it
+ * @example
+ * {{{
+ *      // Pass the type as a type parameter
+ *      case class MyType(...)
+ *
+ *      AutoSchema.createSchema[MyType]
+ *
+ *
+ *      // Or pass the reflection type
+ *      case class MyOtherType(...)
+ *
+ *      AutoSchema.createSchema(ru.typeOf[MyOtherType])
+ * }}}
+ */
+object AutoSchema extends AutoSchema with DefaultTypeMappings
