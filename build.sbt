@@ -6,7 +6,7 @@ organization := "com.sauldhernandez"
 
 scalaVersion := "2.11.7"
 
-semanticVersion := Version(1, 0, 2)
+semanticVersion := Version(1, 0, 3)
 
 scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8")
 
