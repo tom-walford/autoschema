@@ -4,7 +4,9 @@ name := "autoschema"
 
 organization := "com.sauldhernandez"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.12.1"
+
+crossScalaVersions := Seq("2.12.1", "2.11.8")
 
 semanticVersion := Version(1, 0, 3)
 
@@ -13,8 +15,8 @@ scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "ut
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.5.1",
-  "org.scalatest" %% "scalatest" % "2.1.7" % "test",
+  "com.typesafe.play" %% "play-json" % "2.6.0-M7",
+  "org.scalatest" %% "scalatest" % "3.0.1" % "test",
   "com.novocode" % "junit-interface" % "0.11" % "test"
 )
 
