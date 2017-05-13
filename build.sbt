@@ -8,7 +8,7 @@ scalaVersion := "2.12.1"
 
 crossScalaVersions := Seq("2.12.1", "2.11.8")
 
-semanticVersion := Version(1, 0, 3)
+semanticVersion := Version(1, 0, 4)
 
 scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8")
 
