@@ -159,10 +159,10 @@ abstract class AutoSchema {
             if (tpe.typeSymbol.isClass) {
               // Check if this schema is recursive
               if (previousTypes.contains(tpe.typeSymbol.fullName)) {
-                throw new IllegalArgumentException(s"Recursive types detected: $typeName")
+                Json.obj("type" -> "object", "$ref" -> tpe.typeSymbol.name.decodedName.toString)
+              } else {
+                createClassJson(tpe, previousTypes)
               }
-
-              createClassJson(tpe, previousTypes)
             } else {
               Json.obj()
             }

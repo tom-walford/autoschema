@@ -203,16 +203,41 @@ class AutoSchemaTest extends AssertionsForJUnit {
 
   @Test
   def recursiveType: Unit = {
-    intercept[IllegalArgumentException] {
-      createSchema[RecursiveType]
-    }
+    createSchema[RecursiveType] ===
+      Json.obj(
+        "title" -> "RecursiveType",
+        "type" -> "object",
+        "required" -> Json.arr("param1"),
+        "properties" -> Json.obj(
+          "param1" -> Json.obj(
+            "type" -> "object",
+            "$ref" -> "RecursiveType"
+          )
+        )
+      )
   }
 
   @Test
   def mutuallyRecursiveType: Unit = {
-    intercept[IllegalArgumentException] {
-      createSchema[MutuallyRecursiveTypeOne]
-    }
+    createSchema[MutuallyRecursiveTypeOne] ===
+      Json.obj(
+        "title" -> "MutuallyRecursiveTypeOne",
+        "type" -> "object",
+        "required" -> Json.arr("param1"),
+        "properties" -> Json.obj(
+          "param1" -> Json.obj(
+            "title" -> "MutuallyRecursiveTypeTwo",
+            "type" -> "object",
+            "required" -> Json.arr("param1"),
+            "properties" -> Json.obj(
+              "param1" -> Json.obj(
+                "type" -> "object",
+                "$ref" -> "MutuallyRecursiveTypeOne"
+              )
+            )
+          )
+        )
+      )
   }
 
   @Test
